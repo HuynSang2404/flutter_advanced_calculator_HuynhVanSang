@@ -38,7 +38,7 @@ class StorageService {
 
   // Cài đặt đơn vị Góc (Radian hay Degree)
   bool getIsRadian() {
-    return _prefs.getBool(_keyIsRadian) ?? false;
+    return _prefs.getBool(_keyIsRadian) ?? false; // Default: false = DEGREE mode
   }
 
   Future<void> saveIsRadian(bool isRadian) async {

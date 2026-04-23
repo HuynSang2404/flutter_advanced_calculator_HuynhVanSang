@@ -43,7 +43,7 @@ class CalculatorProvider with ChangeNotifier {
     _mode = newMode;
     _storageService.saveCalculatorModeIndex(newMode.index);
     if (newMode == CalculatorMode.programmer) {
-      _currentBase = 10; 
+      _currentBase = 16; // Default to HEX mode for programmer
     }
     clear();
     _shouldClear = false;
