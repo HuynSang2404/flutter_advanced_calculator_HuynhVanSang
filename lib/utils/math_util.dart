@@ -9,14 +9,19 @@ class MathUtil {
       String exprStr = expression
           .replaceAll('×', '*')
           .replaceAll('÷', '/')
-          .replaceAll('π', 'pi')
-          .replaceAll('e', '2.718281828459045')
+          .replaceAll('π', '${math.pi}')
           .replaceAll('EXP', '*10^');
 
+      // Xử lý hàm sqrt
+      exprStr = exprStr.replaceAll('sqrt(', 'sqrt(');
+      
+      // Xử lý log10 - chuyển log(x) thành ln(x)/ln(10)
+      exprStr = _convertLog10ToLn(exprStr);
+
+      // Chuyển đổi độ sang radian nếu đang ở chế độ độ (degrees)
       if (!isRadian) {
-        exprStr = exprStr.replaceAll('sin(', 'sin((pi/180)*');
-        exprStr = exprStr.replaceAll('cos(', 'cos((pi/180)*');
-        exprStr = exprStr.replaceAll('tan(', 'tan((pi/180)*');
+        // Tìm và chuyển đổi các hàm lượng giác
+        exprStr = _convertDegreesToRadians(exprStr);
       }
 
       // Tối ưu UX: Tự động đóng ngoặc đằng sau nếu người dùng quên (vd: sin(45 )
@@ -27,13 +32,10 @@ class MathUtil {
         rightParens++;
       }
 
-      // ignore: deprecated_member_use
       Parser p = Parser();
       Expression exp = p.parse(exprStr);
 
       ContextModel cm = ContextModel();
-      cm.bindVariable(Variable('pi'), Number(math.pi));
-      cm.bindVariable(Variable('e'), Number(math.e));
 
       double eval = exp.evaluate(EvaluationType.REAL, cm);
 
@@ -42,15 +44,98 @@ class MathUtil {
         return 'Error';
       }
 
+      // Làm tròn để tránh lỗi floating point
+      if ((eval - eval.roundToDouble()).abs() < 1e-10) {
+        eval = eval.roundToDouble();
+      }
+
       // Xóa phần thập phân .0 nếu là số nguyên
       String result = eval.toString();
       if (result.endsWith('.0')) {
         return result.substring(0, result.length - 2);
       }
+      
+      // Làm tròn đến 10 chữ số thập phân
+      if (result.contains('.') && result.split('.')[1].length > 10) {
+        result = eval.toStringAsFixed(10);
+        // Xóa các số 0 thừa ở cuối
+        result = result.replaceAll(RegExp(r'0+$'), '');
+        if (result.endsWith('.')) {
+          result = result.substring(0, result.length - 1);
+        }
+      }
+      
       return result;
     } catch (e) {
       return 'Error';
     }
+  }
+
+  // Chuyển đổi log10 sang ln
+  static String _convertLog10ToLn(String expr) {
+    int index = 0;
+    while (index < expr.length) {
+      int logIndex = expr.indexOf('log(', index);
+      if (logIndex == -1) break;
+      
+      // Tìm ngoặc đóng tương ứng
+      int openParen = logIndex + 3; // 'log' has 3 characters
+      int closeParen = _findMatchingParen(expr, openParen);
+      
+      if (closeParen != -1) {
+        String innerExpr = expr.substring(openParen + 1, closeParen);
+        // log10(x) = ln(x) / ln(10)
+        String converted = '(ln($innerExpr)/ln(10))';
+        expr = expr.substring(0, logIndex) + converted + expr.substring(closeParen + 1);
+        index = logIndex + converted.length;
+      } else {
+        break;
+      }
+    }
+    
+    return expr;
+  }
+
+  // Chuyển đổi các hàm lượng giác từ độ sang radian
+  static String _convertDegreesToRadians(String expr) {
+    // Xử lý sin, cos, tan với độ
+    final trigFunctions = ['sin', 'cos', 'tan'];
+    
+    for (var func in trigFunctions) {
+      int index = 0;
+      while (index < expr.length) {
+        int funcIndex = expr.indexOf('$func(', index);
+        if (funcIndex == -1) break;
+        
+        // Tìm ngoặc đóng tương ứng
+        int openParen = funcIndex + func.length;
+        int closeParen = _findMatchingParen(expr, openParen);
+        
+        if (closeParen != -1) {
+          String innerExpr = expr.substring(openParen + 1, closeParen);
+          String converted = '$func(($innerExpr)*${math.pi}/180)';
+          expr = expr.substring(0, funcIndex) + converted + expr.substring(closeParen + 1);
+          index = funcIndex + converted.length;
+        } else {
+          break;
+        }
+      }
+    }
+    
+    return expr;
+  }
+
+  // Tìm ngoặc đóng tương ứng
+  static int _findMatchingParen(String expr, int openIndex) {
+    int count = 1;
+    for (int i = openIndex + 1; i < expr.length; i++) {
+      if (expr[i] == '(') count++;
+      if (expr[i] == ')') {
+        count--;
+        if (count == 0) return i;
+      }
+    }
+    return -1;
   }
 
   // Chế độ dành cho lập trình viên (Programmer Mode)

@@ -17,6 +17,19 @@ class DisplaySection extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
+          // Mode indicator (RAD/DEG) for scientific mode
+          if (provider.mode.toString().contains('scientific'))
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: Text(
+                provider.isRadian ? 'RAD' : 'DEG',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: theme.colorScheme.primary,
+                ),
+              ),
+            ),
           // Danh sách lịch sử hiển thị cuộn được
           Expanded(
             child: ListView.builder(
