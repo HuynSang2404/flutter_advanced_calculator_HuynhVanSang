@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/calculator_provider.dart';
 import '../calc_button.dart';
+import '../long_press_calc_button.dart';
 
 class ScientificKeypad extends StatelessWidget {
   const ScientificKeypad({super.key});
@@ -44,7 +45,21 @@ class ScientificKeypad extends StatelessWidget {
           CalcButton(text: '7', onTap: () => provider.append('7')),
           CalcButton(text: '8', onTap: () => provider.append('8')),
           CalcButton(text: '9', onTap: () => provider.append('9')),
-          CalcButton(text: 'AC', onTap: () => provider.clear(), color: accent, textColor: theme.colorScheme.surface),
+          LongPressCalcButton(
+            text: 'AC', 
+            onTap: () => provider.clear(), 
+            onLongPress: () {
+              provider.clearHistory();
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Đã xóa lịch sử'),
+                  duration: Duration(seconds: 1),
+                ),
+              );
+            },
+            color: accent, 
+            textColor: theme.colorScheme.surface,
+          ),
           CalcButton(text: 'MC', onTap: () => provider.memoryClear(), color: primary),
           CalcButton(text: 'MR', onTap: () => provider.memoryRead(), color: primary),
         ]),
@@ -70,7 +85,7 @@ class ScientificKeypad extends StatelessWidget {
           CalcButton(text: '=', onTap: () => provider.evaluate(), color: accent, textColor: theme.colorScheme.surface),
           CalcButton(text: '+', onTap: () => provider.append('+'), color: primary),
           CalcButton(text: '-', onTap: () => provider.append('-'), color: primary),
-          CalcButton(text: provider.isRadian ? 'RAD' : 'DEG', onTap: () => provider.toggleAngleUnit(), color: primary),
+          CalcButton(text: '1/x', onTap: () => provider.append('^(-1)'), color: primary),
         ]),
       ],
     );

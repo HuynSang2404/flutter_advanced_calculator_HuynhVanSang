@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/calculator_mode.dart';
 import '../providers/calculator_provider.dart';
-import '../providers/theme_provider.dart';
 import '../widgets/display_section.dart';
 import '../widgets/keypads/basic_keypad.dart';
 import '../widgets/keypads/programmer_keypad.dart';
 import '../widgets/keypads/scientific_keypad.dart';
+import 'settings_screen.dart';
 
 class CalculatorScreen extends StatelessWidget {
   const CalculatorScreen({super.key});
@@ -14,7 +14,6 @@ class CalculatorScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final calcProvider = Provider.of<CalculatorProvider>(context);
-    final themeProvider = Provider.of<ThemeProvider>(context);
 
     Widget getKeypad() {
       switch (calcProvider.mode) {
@@ -27,35 +26,29 @@ class CalculatorScreen extends StatelessWidget {
       }
     }
 
+    String getModeName() {
+      switch (calcProvider.mode) {
+        case CalculatorMode.basic:
+          return 'Cơ Bản';
+        case CalculatorMode.scientific:
+          return 'Khoa Học';
+        case CalculatorMode.programmer:
+          return 'Lập Trình Viên';
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Advanced Calculator'),
+        title: Text('Máy Tính ${getModeName()}'),
         actions: [
           IconButton(
-            icon: Icon(themeProvider.isDarkMode ? Icons.dark_mode : Icons.light_mode),
+            icon: const Icon(Icons.settings),
             onPressed: () {
-              themeProvider.toggleTheme();
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SettingsScreen()),
+              );
             },
-          ),
-          PopupMenuButton<CalculatorMode>(
-            initialValue: calcProvider.mode,
-            onSelected: (CalculatorMode mode) {
-              calcProvider.setMode(mode);
-            },
-            itemBuilder: (context) => [
-              const PopupMenuItem(
-                value: CalculatorMode.basic,
-                child: Text('Basic'),
-              ),
-              const PopupMenuItem(
-                value: CalculatorMode.scientific,
-                child: Text('Scientific'),
-              ),
-              const PopupMenuItem(
-                value: CalculatorMode.programmer,
-                child: Text('Programmer'),
-              ),
-            ],
           ),
         ],
       ),

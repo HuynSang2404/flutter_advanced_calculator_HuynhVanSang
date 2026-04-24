@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:vibration/vibration.dart';
+import '../providers/settings_provider.dart';
 
 class CalcButton extends StatefulWidget {
   final String text;
@@ -29,10 +33,26 @@ class _CalcButtonState extends State<CalcButton> {
     });
   }
 
-  void _onTapUp(TapUpDetails details) {
+  void _onTapUp(TapUpDetails details) async {
     setState(() {
       _scale = 1.0;
     });
+    
+    final settingsProvider = Provider.of<SettingsProvider>(context, listen: false);
+    
+    // Phát âm thanh
+    if (settingsProvider.soundEnabled) {
+      SystemSound.play(SystemSoundType.click);
+    }
+    
+    // Rung
+    if (settingsProvider.vibrationEnabled) {
+      final hasVibrator = await Vibration.hasVibrator() ?? false;
+      if (hasVibrator) {
+        Vibration.vibrate(duration: 50);
+      }
+    }
+    
     widget.onTap();
   }
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/calculator_provider.dart';
 import '../calc_button.dart';
+import '../long_press_calc_button.dart';
 
 class ProgrammerKeypad extends StatelessWidget {
   const ProgrammerKeypad({super.key});
@@ -34,7 +35,21 @@ class ProgrammerKeypad extends StatelessWidget {
           CalcButton(text: 'HEX', onTap: () => provider.setBase(16), color: _getBaseColor(isHex)),
           CalcButton(text: 'DEC', onTap: () => provider.setBase(10), color: _getBaseColor(isDec)),
           CalcButton(text: 'BIN', onTap: () => provider.setBase(2), color: _getBaseColor(isBin)),
-          CalcButton(text: 'AC', onTap: () => provider.clear(), color: accent, textColor: theme.colorScheme.surface),
+          LongPressCalcButton(
+            text: 'AC', 
+            onTap: () => provider.clear(), 
+            onLongPress: () {
+              provider.clearHistory();
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Đã xóa lịch sử'),
+                  duration: Duration(seconds: 1),
+                ),
+              );
+            },
+            color: accent, 
+            textColor: theme.colorScheme.surface,
+          ),
           CalcButton(text: 'DEL', onTap: () => provider.delete(), color: primary),
         ]),
         buildRow([

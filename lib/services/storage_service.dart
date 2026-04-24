@@ -1,13 +1,17 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/history_item.dart';
+import '../providers/theme_provider.dart';
 
 class StorageService {
   static const String _keyHistory = 'history';
-  static const String _keyTheme = 'isDarkMode';
+  static const String _keyThemeMode = 'themeMode';
   static const String _keyMode = 'calculatorMode';
   static const String _keyIsRadian = 'isRadian';
   static const String _keyMemory = 'memoryValue';
+  static const String _keySoundEnabled = 'soundEnabled';
+  static const String _keyVibrationEnabled = 'vibrationEnabled';
+  static const String _keyAnimationEnabled = 'animationEnabled';
 
   final SharedPreferences _prefs;
 
@@ -18,13 +22,24 @@ class StorageService {
     return StorageService(prefs);
   }
 
-  // Lưu và đọc trạng thái Theme (Sáng/Tối)
+  // Lưu và đọc Theme Mode (Light/Dark/System)
+  ThemeMode getThemeMode() {
+    final index = _prefs.getInt(_keyThemeMode) ?? 2; // Default: System
+    return ThemeMode.values[index];
+  }
+
+  Future<void> saveThemeMode(ThemeMode mode) async {
+    await _prefs.setInt(_keyThemeMode, mode.index);
+  }
+  
+  // Giữ lại để tương thích
   bool getThemeIsDark() {
-    return _prefs.getBool(_keyTheme) ?? false;
+    final mode = getThemeMode();
+    return mode == ThemeMode.dark;
   }
 
   Future<void> saveThemeIsDark(bool isDark) async {
-    await _prefs.setBool(_keyTheme, isDark);
+    await saveThemeMode(isDark ? ThemeMode.dark : ThemeMode.light);
   }
 
   // Lưu và đọc chế độ máy tính (Basic, Scientific, Programmer)
@@ -70,5 +85,32 @@ class StorageService {
   Future<void> saveHistory(List<HistoryItem> history) async {
     final String encodedList = jsonEncode(history.map((e) => e.toJson()).toList());
     await _prefs.setString(_keyHistory, encodedList);
+  }
+
+  // Âm thanh
+  bool getSoundEnabled() {
+    return _prefs.getBool(_keySoundEnabled) ?? true; // Default: bật
+  }
+
+  Future<void> saveSoundEnabled(bool enabled) async {
+    await _prefs.setBool(_keySoundEnabled, enabled);
+  }
+
+  // Rung
+  bool getVibrationEnabled() {
+    return _prefs.getBool(_keyVibrationEnabled) ?? true; // Default: bật
+  }
+
+  Future<void> saveVibrationEnabled(bool enabled) async {
+    await _prefs.setBool(_keyVibrationEnabled, enabled);
+  }
+
+  // Hoạt ảnh
+  bool getAnimationEnabled() {
+    return _prefs.getBool(_keyAnimationEnabled) ?? true; // Default: bật
+  }
+
+  Future<void> saveAnimationEnabled(bool enabled) async {
+    await _prefs.setBool(_keyAnimationEnabled, enabled);
   }
 }

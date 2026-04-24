@@ -149,4 +149,10 @@ class CalculatorProvider with ChangeNotifier {
       _storageService.saveMemoryValue(_memoryValue);
     }
   }
+
+  void clearHistory() {
+    _history.clear();
+    _storageService.saveHistory(_history);
+    notifyListeners();
+  }
 }
