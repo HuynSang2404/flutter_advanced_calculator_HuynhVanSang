@@ -84,17 +84,15 @@ class _DisplaySectionState extends State<DisplaySection> with SingleTickerProvid
           });
         }
       },
-      child: Stack(
-        children: [
-          Positioned(
-            left: 24,
-            right: 8,
-            top: 16,
-            bottom: 16,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
+      child: Container(
+        width: double.infinity,
+        height: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+        color: Colors.transparent, // Đảm bảo toàn bộ area có thể nhận gesture
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
             // Header với mode indicator và nút history
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -270,8 +268,6 @@ class _DisplaySectionState extends State<DisplaySection> with SingleTickerProvid
               ),
           ],
         ),
-      ),
-        ],
       ),
     );
   }
