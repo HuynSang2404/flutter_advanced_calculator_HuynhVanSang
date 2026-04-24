@@ -2,7 +2,12 @@
 
 ## Video Demo
 
-[![Video Demo](https://img.shields.io/badge/Video-Demo-red?style=for-the-badge&logo=youtube)](ScreenRecording.mp4)
+<video src="https://github.com/HuynSang2404/flutter_advanced_calculator_HuynhVanSang/raw/main/ScreenRecording.mp4" controls width="100%">
+  Video demo ứng dụng máy tính
+</video>
+
+[📥 Tải video nếu không xem được](https://github.com/HuynSang2404/flutter_advanced_calculator_HuynhVanSang/raw/main/ScreenRecording.mp4)
+
 
 ## Ảnh Chụp Màn Hình
 
