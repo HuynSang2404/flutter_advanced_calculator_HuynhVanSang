@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/calculator_provider.dart';
 import '../calc_button.dart';
+import '../long_press_calc_button.dart';
 
 class BasicKeypad extends StatelessWidget {
   const BasicKeypad({super.key});
@@ -31,7 +32,21 @@ class BasicKeypad extends StatelessWidget {
           CalcButton(text: 'M+', onTap: () => provider.memoryAdd(), color: primary),
         ]),
         buildRow([
-          CalcButton(text: 'AC', onTap: () => provider.clear(), color: accent, textColor: theme.colorScheme.surface),
+          LongPressCalcButton(
+            text: 'AC', 
+            onTap: () => provider.clear(), 
+            onLongPress: () {
+              provider.clearHistory();
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Đã xóa lịch sử'),
+                  duration: Duration(seconds: 1),
+                ),
+              );
+            },
+            color: accent, 
+            textColor: theme.colorScheme.surface,
+          ),
           CalcButton(text: 'DEL', onTap: () => provider.delete(), color: primary),
           CalcButton(text: '(', onTap: () => provider.append('('), color: primary),
           CalcButton(text: ')', onTap: () => provider.append(')'), color: primary),

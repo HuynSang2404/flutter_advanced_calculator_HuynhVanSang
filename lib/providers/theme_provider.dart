@@ -1,17 +1,33 @@
 import 'package:flutter/material.dart';
 import '../services/storage_service.dart';
 
+enum ThemeMode { light, dark, system }
+
 class ThemeProvider with ChangeNotifier {
   final StorageService _storageService;
-  bool _isDarkMode;
+  ThemeMode _themeMode;
 
-  ThemeProvider(this._storageService) : _isDarkMode = _storageService.getThemeIsDark();
+  ThemeProvider(this._storageService) 
+      : _themeMode = _storageService.getThemeMode();
 
-  bool get isDarkMode => _isDarkMode;
+  ThemeMode get themeMode => _themeMode;
+  
+  bool get isDarkMode => _themeMode == ThemeMode.dark;
+  bool get isLightMode => _themeMode == ThemeMode.light;
+  bool get isSystemMode => _themeMode == ThemeMode.system;
 
-  void toggleTheme() {
-    _isDarkMode = !_isDarkMode;
-    _storageService.saveThemeIsDark(_isDarkMode);
+  void setThemeMode(ThemeMode mode) {
+    _themeMode = mode;
+    _storageService.saveThemeMode(mode);
     notifyListeners();
+  }
+  
+  // Giữ lại để tương thích với code cũ
+  void toggleTheme() {
+    if (_themeMode == ThemeMode.light) {
+      setThemeMode(ThemeMode.dark);
+    } else {
+      setThemeMode(ThemeMode.light);
+    }
   }
 }
