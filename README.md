@@ -1,8 +1,7 @@
 # Máy Tính Nâng Cao Flutter
 
 ## Video Demo
-
-[![Video Demo](https://img.shields.io/badge/Video-Demo-red?style=for-the-badge&logo=youtube)](screenshots/Screen_Recording.mp4)
+(https://github.com/HuynSang2404/flutter_advanced_calculator_HuynhVanSang/raw/main/Screen Recording.mp4))
 
 ## Ảnh Chụp Màn Hình
 
