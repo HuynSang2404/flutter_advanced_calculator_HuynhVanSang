@@ -6,7 +6,7 @@
   Video demo ứng dụng máy tính
 </video>
 
-[📥 Tải video nếu không xem được](https://github.com/HuynSang2404/flutter_advanced_calculator_HuynhVanSang/raw/main/ScreenRecording.mp4)
+[Tải video ](https://github.com/HuynSang2404/flutter_advanced_calculator_HuynhVanSang/raw/main/ScreenRecording.mp4)
 
 
 ## Ảnh Chụp Màn Hình
